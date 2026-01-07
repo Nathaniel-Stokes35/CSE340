@@ -1,6 +1,182 @@
+:root
+{
+  --main-blue: #0eb0d4;
+
+}
 /******* Change Box Model ***************/
 *,
 *:before,
 *:after {
   box-sizing: border-box;
 }
+
+/************ Body Styles *************/
+#wrapper {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  border: var(--main-blue) 5px solid;
+  border-radius: 0.5em;
+  color: #333;
+  padding: 1em;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+    width: 100%;
+}
+header a {
+    text-decoration: none;
+    color: #35424a;
+}
+#return {
+    font-size: 24px;
+    font-weight: bold;
+}
+nav {
+    background-color: #35424a;
+    color: #ffffff;
+    text-align: center;
+    width: 100%;
+    padding: 5px;
+}
+nav ul {
+    display: flex;
+    justify-content: space-evenly;
+    text-decoration: none;
+    list-style: none;
+    width: 100%;
+    padding: 0;
+}
+nav ul li {
+    margin: 0;
+}
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+#hero {
+    position: relative;
+    text-align: center;
+    color: white;
+    margin-bottom: 2em;
+}
+#hero img {
+    width: 80%;
+    height: auto;
+    border: 1px solid #333;
+}
+.hero-text {
+    position: absolute;
+    top: 0;
+    color: var(--main-blue);
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: left;
+    padding: 1em;
+    left: 10%;
+    height: 100%;;
+}
+.hero-text h2 {
+    font-size: 2em;
+    color: var(--main-blue);
+    margin: 0.2em 0;
+}
+.hero-text ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.hero-text li {
+    margin: 0;
+    font-size: larger;
+    font-weight: bold;
+}
+.cta-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6em 1.4em;
+
+    font-weight: 600;
+    letter-spacing: 0.05em;
+
+    color: #000;
+    background: var(--main-blue);
+
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.50),
+        inset 0 1px 0 rgba(127, 127, 127, 0.25);
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+.cta-btn:hover {
+    background: #17b3d6;
+    box-shadow:
+        0 6px 8px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(127, 127, 127, 0.25);
+    transform: translateY(-2px);
+}
+.car-details {
+    display: flex;
+    gap: 2rem;
+    flex-direction: column-reverse;
+}
+.car-details .upgrades {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    list-style: none;
+}
+.car-details .upgrades li {
+    padding: 1em;
+    margin: 5px 0;
+    text-align: center;
+}
+.car-details .upgrades #img-cont {
+    width: 100%;
+    background-color: var(--main-blue);
+    border: 1px solid #333;
+    padding: 1em;
+}
+footer {
+  text-align: left;
+  padding: 10px 0;
+  position: static;
+  width: 100%;
+}
+footer p {
+  margin: 0;
+}
+/* Additional Styles */
+h1, h2, h3 {
+  color: #35424a;
+}
+
+/* Responsive Design */
+@media screen and (min-width: 760px) {
+    html {
+        background-image: url('../images/site/checkerboard.jpg');
+    }
+    body {
+        max-width: 1080px;
+        margin: auto;
+    }
+    nav {
+        padding: 10px 0;
+    }
+    .car-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+/* End of styles.css */

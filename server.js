@@ -29,10 +29,30 @@ app.set("layout", "./layouts/layout") // not at views root
 app.use(require("./routes/static"))
 
 // Index route
-app.get("/", baseController.buildHome)
+app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
-app.use("/inv", inventoryRoute)
+app.use("/inv", utilities.handleErrors(inventoryRoute))
+
+/* File Not Found Route */
+app.use(async (req, res, next) => {
+    next({ status: 404, message: "It appears the page has been lost, maybe it was sold? So good news, you have good taste!" });
+});
+
+/* Express Error Handler */
+app.use(async (err, req, res, next) => {
+    let nav = await utilities.getNav();
+    console.error(`Error at: "${req.originalUrl}": ${err.message}`);
+    if (err.status == 404) {
+        message = err.message } else { message = "Uh oh, a crash has occured, trust us, crashes are the last thing we want here. Maybe we should have changed routes?"}
+    res.render("errors/error", {
+        title: err.status || "Server Error",
+        message,
+        nav,
+    })
+})
+
+
 
 /* ***********************
  * Local Server Information

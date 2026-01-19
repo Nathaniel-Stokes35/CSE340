@@ -50,7 +50,7 @@ app.use(async (err, req, res, next) => {
     if (err.status == 404) { message = err.message } 
     else { message = "Uh oh, a crash has occured, trust us, crashes are the last thing we want here. Maybe we should have changed routes?" }
     res.status(err.status || 500).render("errors/error", {
-        title: err.status || "Server Error",
+        title: err.status == 404 ? "Page Not Found" : "Server Error",
         status: err.status || 500,
         message,
         nav,

@@ -1,4 +1,5 @@
 const pool = require("../database/")
+const { get } = require("../routes/static")
 
 /* Return all classifications from the Database */
 async function getClassifications() {
@@ -23,4 +24,17 @@ async function getInventoryByClassificationId(classification_id) {
     }
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId }
+async function getByInventoryId(inv_id) {
+    try {
+        const data = await pool.query(
+            `SELECT * FROM public.inventory WHERE inv_id = $1`,
+            [inv_id]
+        )
+        return data.rows[0]
+    } catch (error) {
+        console.error("getByInventoryId error " + error
+        )
+    }
+}
+
+module.exports = { getClassifications, getInventoryByClassificationId, getByInventoryId }

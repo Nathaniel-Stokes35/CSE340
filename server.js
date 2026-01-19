@@ -32,7 +32,7 @@ app.use(require("./routes/static"))
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
-app.use("/inv", utilities.handleErrors(inventoryRoute))
+app.use("/inv", utilities.handleErrors(inventoryRoute)) // handles both the classification grid and single item views
 
 /* File Not Found Route */
 app.use(async (req, res, next) => {

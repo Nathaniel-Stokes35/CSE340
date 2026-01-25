@@ -10,6 +10,13 @@ function togglePassword() {
 <div id="login-box">
     <h1>Account Registration</h1>
     <%- messages() %>
+    <% if (errors) { %>
+        <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+        <% }) %>
+        </ul>
+    <% } %>
     <form action="/account/register" method="post" id="login-form">
         <label for="account_firstname">First Name</label>
         <input type="text" name="account_firstname" id="account_firstname" required <% if (typeof clientFirstname !== 'undefined') { %> value="<%= clientFirstname %>" <% } %> >
@@ -22,8 +29,8 @@ function togglePassword() {
         
         <label for="account_password">Password</label>
         <input type="password" name="account_password" id="account_password" required 
-        pattern="(?=^.{12,}$)(?=.*\d)(?=.*\W+)(?![.\n])(?=.*[A-Z]).*$"
-        title="Password must be at least 12 characters and contain at least 1 uppercase letter, 1 number, and 1 special character.">
+        pattern="^(?=*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+        title="Password must be at least 12 characters and contain at least 1 uppercase letter, 1 number, and 1 special character | Spaces Not Allowed.">
         <span id="pswdShow" onclick="togglePassword()">Show Password</span>
         
         <button type="submit" id="login-btn">Register</button>

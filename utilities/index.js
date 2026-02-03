@@ -66,40 +66,44 @@ Util.buildFilterControl = async function (classification_ids, prevFilters={} ) {
         console.log("Current Value: ", currentValue)
 
         filters += `<div class="filter_row">`
-            filters += `<label for="${key}">${cleanKey}</label>`
+            filters += `<label for="${key}_filter">${cleanKey}</label>`
             if (MAX_COLUMNS.includes(key)) {
                 filters += `<input type="number" name="${key}_filter" id="${key}_filter" placeholder="Max ${cleanKey}" value="${currentValue}">`
-                filters += `<input type="radio" name="sort_by" value="${key}_asc" id="${key}_asc" ${filters.sort_by === `${key}_asc` ? 'checked' : ''}><label for="${key}_asc">Asc</label>`;
-                filters += `<input type="radio" name="sort_by" value="${key}_desc" id="${key}_desc" ${filters.sort_by === `${key}_desc` ? 'checked' : ''}><label for="${key}_desc">Desc</label>`;
+                filters += `<fieldset><legend>Organize Results by ${cleanKey} Ascending or Descending</legend>`
+                    filters += `<input type="radio" name="sort_by" value="${key}_asc" id="${key}_asc" ${filters.sort_by === `${key}_asc` ? 'checked' : ''}><label for="${key}_asc">Asc</label>`;
+                    filters += `<input type="radio" name="sort_by" value="${key}_desc" id="${key}_desc" ${filters.sort_by === `${key}_desc` ? 'checked' : ''}><label for="${key}_desc">Desc</label>`;
+                filters += `</fieldset>`
             } else if (MIN_COLUMNS.includes(key)) {
                 filters += `<input type="number" name="${key}_filter" id="${key}_filter" placeholder="Minimum ${cleanKey}" value="${currentValue}">`
-                filters += `<input type="radio" name="sort_by" value="${key}_asc" id="${key}_asc" ${filters.sort_by === `${key}_asc` ? 'checked' : ''}><label for="${key}_asc">Asc</label>`;
-                filters += `<input type="radio" name="sort_by" value="${key}_desc" id="${key}_desc" ${filters.sort_by === `${key}_desc` ? 'checked' : ''}><label for="${key}_desc">Desc</label>`;
+                filters += `<fieldset><legend>Organize Results by ${cleanKey} Ascending or Descending</legend>`
+                    filters += `<input type="radio" name="sort_by" value="${key}_asc" id="${key}_asc" ${filters.sort_by === `${key}_asc` ? 'checked' : ''}><label for="${key}_asc">Asc</label>`;
+                    filters += `<input type="radio" name="sort_by" value="${key}_desc" id="${key}_desc" ${filters.sort_by === `${key}_desc` ? 'checked' : ''}><label for="${key}_desc">Desc</label>`;
+                filters += `</fieldset>`
             } else {
                 filters += `<input type="text" name="${key}_filter" id="${key}_filter" placeholder="Keywords in ${cleanKey}" value="${currentValue}">`
             }
         filters += `</div>`
     })
     let classes = await invModel.getClassifications()
-    let classCheck = `<ul class="class_checkbox_ul">`
+    let classCheck = `<ul class="class_checkbox_ul"><fieldset><fieldset><legend>Vehicle Classifications:</legend>`
     classes.rows.forEach(row => {
         const isChecked = classification_ids.includes(row.classification_id) ? 'checked' : ''
         classCheck += `
         <li>
             <label for="class_${row.classification_id}">
+                ${row.classification_name}
                 <input
                     type="checkbox" 
-                    id="${row.classification_name}_check" 
+                    id="class_${row.classification_name}" 
                     value="${row.classification_id}" 
                     ${isChecked}
                     title="Filter for ${row.classification_name} vehicles"
-                    name="classification_ids[]"
+                    name="class_${row.classification_name}"
                 >
-                ${row.classification_name}
             </label>
         </li>`
     })
-    classCheck += `</ul>`
+    classCheck += `</ul></fieldset>`
     filters += classCheck
     filters += `<button type="submit">Apply Filters</button>`
     filters += `</form>`

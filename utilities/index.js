@@ -35,6 +35,77 @@ Util.getNav = async function (req, res, next) {
     return list
 }
 
+Util.buildFilterControl = async function (classification_ids, prevFilters={} ) {
+    let empty = true // default
+    let combinedColumns = new Set()
+
+    for (const id of classification_ids) {
+        const { isEmpty, columns } = await invModel.getFilterOptions(id)
+        empty = empty && isEmpty
+        if (columns && Array.isArray(columns)) {
+            columns.forEach(col => combinedColumns.add(col))
+        }
+    }
+    const columns = Array.from(combinedColumns)
+
+    const MAX_COLUMNS = [ 'inv_price', 'inv_miles' ] 
+    const MIN_COLUMNS = [ 'inv_year' ]
+
+    let hiddenIds = classification_ids.map(id => `<input type="hidden" name="classification_ids[]" value="${id}">`).join('');
+
+    filters = `<form action="/inv/type/${classification_ids}" method='get'>`
+    filters += hiddenIds;
+
+    if (empty) filters += `<p>That Classification is empty, select a new classification(s)</p>`
+    else { filters += `<p>Filter by field or Search by Column</p>` }
+    columns.forEach(key => {
+        if (key === "inv_id" || key === "classification_id" || key === "inv_image" || key === "inv_thumbnail") return;
+
+        const cleanKey = key.replace("inv_", "").replace(/\b\w/g, c => c.toUpperCase());
+        const currentValue = prevFilters[key + '_filter'] || ''
+        console.log("Current Value: ", currentValue)
+
+        filters += `<div class="filter_row">`
+            filters += `<label for="${key}">${cleanKey}</label>`
+            if (MAX_COLUMNS.includes(key)) {
+                filters += `<input type="number" name="${key}_filter" id="${key}_filter" placeholder="Max ${cleanKey}" value="${currentValue}">`
+                filters += `<input type="radio" name="sort_by" value="${key}_asc" id="${key}_asc" ${filters.sort_by === `${key}_asc` ? 'checked' : ''}><label for="${key}_asc">Asc</label>`;
+                filters += `<input type="radio" name="sort_by" value="${key}_desc" id="${key}_desc" ${filters.sort_by === `${key}_desc` ? 'checked' : ''}><label for="${key}_desc">Desc</label>`;
+            } else if (MIN_COLUMNS.includes(key)) {
+                filters += `<input type="number" name="${key}_filter" id="${key}_filter" placeholder="Minimum ${cleanKey}" value="${currentValue}">`
+                filters += `<input type="radio" name="sort_by" value="${key}_asc" id="${key}_asc" ${filters.sort_by === `${key}_asc` ? 'checked' : ''}><label for="${key}_asc">Asc</label>`;
+                filters += `<input type="radio" name="sort_by" value="${key}_desc" id="${key}_desc" ${filters.sort_by === `${key}_desc` ? 'checked' : ''}><label for="${key}_desc">Desc</label>`;
+            } else {
+                filters += `<input type="text" name="${key}_filter" id="${key}_filter" placeholder="Keywords in ${cleanKey}" value="${currentValue}">`
+            }
+        filters += `</div>`
+    })
+    let classes = await invModel.getClassifications()
+    let classCheck = `<ul class="class_checkbox_ul">`
+    classes.rows.forEach(row => {
+        const isChecked = classification_ids.includes(row.classification_id) ? 'checked' : ''
+        classCheck += `
+        <li>
+            <label for="class_${row.classification_id}">
+                <input
+                    type="checkbox" 
+                    id="${row.classification_name}_check" 
+                    value="${row.classification_id}" 
+                    ${isChecked}
+                    title="Filter for ${row.classification_name} vehicles"
+                    name="classification_ids[]"
+                >
+                ${row.classification_name}
+            </label>
+        </li>`
+    })
+    classCheck += `</ul>`
+    filters += classCheck
+    filters += `<button type="submit">Apply Filters</button>`
+    filters += `</form>`
+
+    return filters
+}
 /* Classification View Creation */
 Util.buildClassificationGrid = async function(data) {
     let grid

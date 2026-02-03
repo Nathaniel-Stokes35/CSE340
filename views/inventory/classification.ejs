@@ -4,6 +4,10 @@
     res.redirect('/')
  } %>
 
- <%# messages() %>
-
-  <%- grid %>
+<%- messages() %>
+<div class="wrapper">
+    <%- grid %>
+    <div class="sidebar">
+        <%- filterControl %>
+    </div>
+</div>

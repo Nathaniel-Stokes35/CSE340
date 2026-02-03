@@ -5,15 +5,45 @@ const invCont = {}
 
 /* Building Inventory by Classification view */
 invCont.buildByClassificationId = async function (req, res, next) {
-    const classification_id = req.params.classificationId 
-    const data = await invModel.getInventoryByClassificationId(classification_id)
+    const rawId = req.query.classification_ids ?? req.params.classificationId;
+    const classification_id = parseInt(rawId, 10);
+
+    let classification_ids = req.query.classification_ids
+    if (!classification_ids || classification_ids.length === 0) {
+        classification_ids = [classification_id]
+    } else if (!Array.isArray(classification_ids)) {
+        classification_ids = [classification_ids]
+    }
+    const classSet = new Set(classification_ids.map(Number).filter(Boolean)) // Removing Duplicate classification Ids
+    classification_ids = Array.from(classSet)
+
+    console.log("classification_ids (In Controller): ", classification_ids)
+    const filters = req.query;
+
+    const data = await invModel.getInventoryByClassificationId(classification_ids, filters)
+
+    const filterControl = await utilities.buildFilterControl(classification_ids, filters)
     const grid = await utilities.buildClassificationGrid(data)
+
     let nav = await utilities.getNav()
-    const className = data[0].classification_name
+    const classNameResults = await invModel.getClassifications()
+    const classNames = classNameResults.rows
+
+    const selectedNames = classification_ids.map(id => { // matching the ids from classification_ids to the classification_id in classNames from the database
+        const match = classNames.find(c => c.classification_id === id)
+        return match ? match.classification_name : ""
+    }).filter(Boolean)
+    
+    const finalName = selectedNames.length > 0 ? selectedNames.join(", ") + " Automotives"  : "Vehicles"
+    console.log("Class Names: ", classNames)
+ 
     res.render("./inventory/classification", {
-        title: className + " vehicles",
+        title: finalName,
         nav,
+        filterControl,
         grid,
+        classification_ids,
+        filters
     })
 }
 

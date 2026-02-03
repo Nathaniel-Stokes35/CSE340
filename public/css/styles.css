@@ -21,6 +21,28 @@
   color: #333;
   padding: 1em;
 }
+.wrapper {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.wrapper input, button {
+    padding: 1em;
+    margin: 0.5em;
+}
+.wrapper ul {
+    text-decoration: none;
+    list-style: none;
+}
+.wrapper form {
+    border: var(--main-blue) 2px solid;
+}
+.filter_row {
+    padding: 0.5em;
+    margin: 1em;
+    border: black 1px solid;
+}
 header {
     display: flex;
     justify-content: space-between;
@@ -331,6 +353,10 @@ h1, h2, h3 {
     }
     nav {
         padding: 10px 0;
+    }
+    .wrapper {
+        display: grid;
+        grid-template-columns: 4fr 1fr;
     }
     .car-details {
         display: grid;

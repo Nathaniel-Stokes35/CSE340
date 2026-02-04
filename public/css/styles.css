@@ -91,7 +91,7 @@ nav a:hover {
 .notice.error {
     font-weight: 300;
     border-radius: 24px;
-    border: solid, 1px, #000;
+    border: solid 1px #000;
     color: red;
     font-size: 0.9em;
     margin-top: 2px;

@@ -1,32 +1,59 @@
 <h1><%= title %></h1>
 <%- messages() %>
+<% if (locals.errors) { %>
+  <div class="alert alert-danger">
+    <h3>Please correct the following errors:</h3>
+    <ul>
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }); %>
+    </ul>
+  </div>
+<% } %>
 
-<form action="/account/update" method="post">
-  <input type="hidden" name="account_id" value="<%= account.account_id %>">
+<section>
+  <h2>Account Information</h2>
+  <form action="/account/update" method="post">
+    <input type="hidden" name="account_id" value="<%= account.account_id %>">
 
-  <label for="account_firstname">First Name</label>
-  <input type="text" id="account_firstname" name="account_firstname" value="<%= account.account_firstname %>" required>
+    <fieldset>
+      <legend>Update Account Details</legend>
+      
+      <div class="form-group">
+        <label for="account_firstname">First Name</label>
+        <input type="text" id="account_firstname" name="account_firstname" value="<%= account.account_firstname %>" required>
+      </div>
 
-  <label for="account_lastname">Last Name</label>
-  <input type="text" id="account_lastname" name="account_lastname" value="<%= account.account_lastname %>" required>
+      <div class="form-group">
+        <label for="account_lastname">Last Name</label>
+        <input type="text" id="account_lastname" name="account_lastname" value="<%= account.account_lastname %>" required>
+      </div>
 
-  <label for="account_email">Email</label>
-  <input type="email" id="account_email" name="account_email" value="<%= account.account_email %>" required>
+      <div class="form-group">
+        <label for="account_email">Email Address</label>
+        <input type="email" id="account_email" name="account_email" value="<%= account.account_email %>" required>
+      </div>
 
-  <button type="submit">Update Account</button>
-</form>
+      <button type="submit">Update Account</button>
+    </fieldset>
+  </form>
+</section>
 
-<hr>
+<section>
+  <h2>Change Password</h2>
+  <form action="/account/update-password" method="post">
+    <input type="hidden" name="account_id" value="<%= account.account_id %>">
 
-<form action="/account/update-password" method="post">
-  <input type="hidden" name="account_id" value="<%= account.account_id %>">
+    <fieldset>
+      <legend>Password Change</legend>
+      
+      <div class="form-group">
+        <label for="account_password">New Password</label>
+        <input type="password" id="account_password" name="account_password" required>
+        <p class="form-note">Password must be at least 12 characters and include uppercase, lowercase, number, and symbol.</p>
+      </div>
 
-  <label for="account_password">New Password</label>
-  <input type="password" id="account_password" name="account_password" required>
-
-  <p class="form-note">
-    Password must be at least 12 characters and include uppercase, lowercase, number, and symbol.
-  </p>
-
-  <button type="submit">Change Password</button>
-</form>
+      <button type="submit">Change Password</button>
+    </fieldset>
+  </form>
+</section>

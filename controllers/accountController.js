@@ -94,6 +94,8 @@ async function updateAccount(req, res) {
         account_id
     )
 
+    console.log("reqResult: ", reqResult)
+
     if (reqResult) {
         req.flash(
             "notice",

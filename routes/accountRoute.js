@@ -16,25 +16,25 @@ router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.b
 
 router.post(
     "/register", 
-    regValidate.registrationRules(),
+    regValidate.runRegistrationRules,
     regValidate.checkRegData,
     utilities.handleErrors(accountController.registerAccount)
 )
 router.post(
     "/update",
-    regValidate.updateAccountRules(),
+    regValidate.runUpdateAccountRules,
     regValidate.checkUpdateAccountData,
     utilities.handleErrors(accountController.updateAccount)
 )
 router.post(
     "/update-password",
-    regValidate.passwordRules(),
+    regValidate.runPasswordRules,
     regValidate.checkPasswordData,
     utilities.handleErrors(accountController.updatePassword)
 )
 router.post(
     "/login",
-    regValidate.loginRules(),
+    regValidate.runLoginRules,
     regValidate.checkLoginData,
     utilities.handleErrors(accountController.accountLogin)
 )

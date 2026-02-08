@@ -24,6 +24,7 @@ validate.registrationRules = () => {
         .trim()
         .escape()
         .normalizeEmail()
+        .toLowerCase()
         .notEmpty().withMessage("Email is required.").bail() // If empty stops
         .isEmail().withMessage("Email must be Valid").bail() // Stops if invalid email
         .custom(async (account_email) => {
@@ -75,22 +76,27 @@ validate.updateAccountRules = () => {
         .trim()
         .escape()
         .normalizeEmail()
+        .toLowerCase()
         .notEmpty().withMessage("Email is required.").bail() // If empty stops
         .isEmail().withMessage("Email must be Valid").bail() // Stops if invalid email
         .custom(async (account_email, { req }) => {
-            const emailExists = await accountModel.checkExistingEmail(account_email)
-            if(emailExists && account_email !== res.locals.accountData.account_email) { // Checks if the changed email already has a seperate, already existing account
+            const emailExists = await accountModel.checkExistingEmail(account_email.toLowerCase())
+            const currentAccount = await accountModel.getAccountById(req.body.account_id)
+            const currentEmail = currentAccount.account_email.toLowerCase()
+            if(emailExists && account_email !== currentEmail) {
                 throw new Error("New email address is already in use on another profile.")
             }
         })
     ]
 }
 validate.passwordRules = () => {
-    return body("account_password")
+    return [
+    body("account_password")
         .trim()
         .notEmpty().withMessage("Please Provide a password")
         .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$/) 
         .withMessage("Password must have an upper and lowercase letter, a number, and a symbol, with no spaces.")
+    ]
 }
 
 // Check the Data and Return errors to continue registration //
@@ -117,13 +123,16 @@ validate.checkUpdateAccountData = async (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         let nav = await utilities.getNav()
-        res.render("/update", {
+        res.render("account/update", {
             errors,
             title: "Update Account",
             nav,
-            account_firstname,
-            account_lastname,
-            account_email,
+            account: {
+                account_id: req.body.account_id,
+                account_firstname,
+                account_lastname,
+                account_email,
+            },
         })
         return
     }
@@ -134,7 +143,7 @@ validate.checkPasswordData = async (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         let nav = await utilities.getNav()
-        res.render('/update', {
+        res.render('account/update', {
             errors,
             title: "Update Password",
             nav,
@@ -177,6 +186,35 @@ validate.checkLoginData = async (req, res, next) => {
         return
     }
     next()
+}
+
+// Middleware to reiniate validator states on each run, to ensure the validation is running each time the form is submitted.
+validate.runRegistrationRules = (req, res, next) => {
+    const validators = validate.registrationRules()
+    Promise.all(validators.map(v => v.run(req)))
+        .then(() => next())
+        .catch(next)
+}
+
+validate.runUpdateAccountRules = (req, res, next) => {
+    const validators = validate.updateAccountRules(account_id = req.body.account_id)
+    Promise.all(validators.map(v => v.run(req)))
+        .then(() => next())
+        .catch(next)
+}
+
+validate.runPasswordRules = (req, res, next) => {
+    const validators = validate.passwordRules()
+    Promise.all(validators.map(v => v.run(req)))
+        .then(() => next())
+        .catch(next)
+}
+
+validate.runLoginRules = (req, res, next) => {
+    const validators = validate.loginRules()
+    Promise.all(validators.map(v => v.run(req)))
+        .then(() => next())
+        .catch(next)
 }
 
 module.exports = validate

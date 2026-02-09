@@ -121,7 +121,11 @@ async function updatePassword(req, res) {
     const { account_id, account_password } = req.body
     const hashedPassword = await bcrypt.hash(account_password, 10)
 
-    const reqResult = await accountModel.updatePassword( hashed_password, account_id )
+    const account = await accountModel.getAccountById(account_id);
+    console.log("account: ", account)
+    const account_firstname = account.account_firstname;
+
+    const reqResult = await accountModel.updatePassword( hashedPassword, account_id )
 
     if (reqResult) {
         req.flash(

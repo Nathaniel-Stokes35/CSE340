@@ -247,6 +247,22 @@ nav a:hover {
     width: 90%;
 }
 
+.error-message {
+    display: block;
+    color: #b10000;
+    background: rgba(177,16,16,0.15);
+    border: none;
+    font-size: 0.9em;
+    margin: 0.25em 0 0.75em 0;
+    text-align: left;
+    font-weight: 200;
+}
+
+#login-box .error-message {
+    padding: 0.25em 0.5em;
+    border-radius: 4px;
+}
+
 #pswdShow {
     display: inline-block;
     margin-top: -0.5em;

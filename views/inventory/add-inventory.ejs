@@ -97,12 +97,27 @@
             });
 
             function showError(fieldId, message) {
+                // remove any existing error for this field
+                const old = document.querySelector(`.error-message[data-for="${fieldId}"]`);
+                if (old) old.remove();
+
                 const field = document.getElementById(fieldId);
+                const label = document.querySelector(`label[for="${fieldId}"]`);
                 const error = document.createElement('div');
-                error.className = 'notice error';
+                error.className = 'error-message notice error';
+                error.setAttribute('data-for', fieldId);
                 error.textContent = message;
-                field.parentNode.appendChild(error);
-                field.focus();
+
+                // Insert the error directly after the label so it appears below the label
+                if (label && label.parentNode) {
+                    label.parentNode.insertBefore(error, label.nextSibling);
+                } else if (field && field.parentNode) {
+                    field.parentNode.insertBefore(error, field);
+                } else {
+                    document.getElementById('add-inventory').appendChild(error);
+                }
+
+                if (field) field.focus();
             }
         </script>
     </form>
